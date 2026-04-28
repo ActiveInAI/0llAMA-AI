@@ -80,10 +80,38 @@ function renderItems() {
               <strong>${title}</strong>
               <small>${note}</small>
             </div>
-            <span class="unit-chip">${unit}</span>
-            <input data-role="qty" data-key="${key}" type="number" min="0" step="0.01" value="${quantity}" />
-            <input data-role="price" data-key="${key}" type="number" min="0" step="0.01" value="${unitPrice}" />
-            <span class="subtotal-chip" id="${key}Subtotal">${formatCurrency(0)}</span>
+            <div class="table-cell">
+              <span class="mobile-label">单位</span>
+              <span class="unit-chip">${unit}</span>
+            </div>
+            <label class="table-cell input-cell">
+              <span class="mobile-label">工程量</span>
+              <input
+                data-role="qty"
+                data-key="${key}"
+                type="number"
+                min="0"
+                step="0.01"
+                inputmode="decimal"
+                value="${quantity}"
+              />
+            </label>
+            <label class="table-cell input-cell">
+              <span class="mobile-label">单价</span>
+              <input
+                data-role="price"
+                data-key="${key}"
+                type="number"
+                min="0"
+                step="0.01"
+                inputmode="decimal"
+                value="${unitPrice}"
+              />
+            </label>
+            <div class="table-cell">
+              <span class="mobile-label">小计</span>
+              <span class="subtotal-chip" id="${key}Subtotal">${formatCurrency(0)}</span>
+            </div>
           </div>
         `;
       })
