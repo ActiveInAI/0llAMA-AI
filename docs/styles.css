@@ -320,6 +320,9 @@ input[readonly] {
   display: grid;
   gap: 10px;
   min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-head,
@@ -328,6 +331,7 @@ input[readonly] {
   grid-template-columns: minmax(180px, 1.4fr) 90px 1fr 1fr 1fr;
   gap: 10px;
   align-items: center;
+  min-width: 720px;
 }
 
 .table-head {
@@ -485,23 +489,9 @@ input[readonly] {
     padding: 18px;
   }
 
+  .table-head,
   .table-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    padding: 14px;
-  }
-
-  .table-row-name {
-    grid-column: 1 / -1;
-    padding-bottom: 4px;
-  }
-
-  .mobile-label {
-    display: block;
-  }
-
-  .table-head {
-    display: none;
+    min-width: 720px;
   }
 
   .summary-strip {
@@ -543,16 +533,6 @@ input[readonly] {
     grid-template-columns: 1fr;
   }
 
-  .table-row {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .table-cell,
-  .input-cell {
-    gap: 6px;
-  }
-
   .result-row {
     align-items: start;
     flex-direction: column;
@@ -569,6 +549,10 @@ input[readonly] {
   .summary-output {
     min-height: 220px;
     font-size: 16px;
+  }
+
+  .item-table {
+    margin-inline: -2px;
   }
 
   input,
