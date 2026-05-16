@@ -1,0 +1,30 @@
+{
+  "nodes": {
+    "USA-LAX-A1": {
+      "label": "美国 洛杉矶",
+      "country": "US",
+      "ip": "203.0.113.10",
+      "remote_port": 443,
+      "socks": 10828,
+      "http": 10829,
+      "outbound": "proxy-la",
+      "panel": "https://203.0.113.10:2053/{PANEL_PATH}/panel/",
+      "subscription": "https://203.0.113.10:2096/sub/{SUBSCRIPTION_TOKEN}",
+      "enabled": true,
+      "note": "主节点示例。生产使用前替换为真实节点。"
+    },
+    "NLD-AMS-A1": {
+      "label": "荷兰 阿姆斯特丹",
+      "country": "NL",
+      "ip": "198.51.100.20",
+      "remote_port": 443,
+      "socks": 10818,
+      "http": 10819,
+      "outbound": "proxy-ams",
+      "panel": "https://198.51.100.20:2053/{PANEL_PATH}/panel/",
+      "subscription": "https://198.51.100.20:2096/sub/{SUBSCRIPTION_TOKEN}",
+      "enabled": true,
+      "note": "备用节点示例。生产使用前替换为真实节点。"
+    }
+  }
+}

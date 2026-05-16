@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: blob:; img-src 'self' data:; connect-src 'none'; font-src 'self' data:; base-uri 'none'; form-action 'none'">
+<title>ArchIToken-VPN · 团队安全接入与全平台部署指南</title>
+<style>
+:root {
+  --ink:#ebe6d8; --ink-dim:#a9a18e; --ink-mute:#6e695a;
+  --paper:#0b0b10; --paper-2:#13131a; --paper-3:#1c1c26; --paper-4:#242432;
+  --line:#2a2a36; --line-lo:#1e1e28;
+  --accent:#d4a755; --accent-hi:#f0c878; --accent-dim:#8a6d30;
+  --signal:#7fbf7f; --warn:#e6a052; --danger:#d45a4a; --info:#7a9cc6;
+  --mono:"SF Mono","JetBrains Mono","Cascadia Code",Consolas,Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",Arial,sans-serif;
+  --serif:"Noto Serif SC","Songti SC",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:82px}
+body{
+  min-height:100vh;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.78;letter-spacing:.015em;
+  background-image:
+    radial-gradient(circle at 12% 0%,rgba(212,167,85,.08),transparent 46%),
+    radial-gradient(circle at 92% 100%,rgba(122,156,198,.06),transparent 48%),
+    linear-gradient(var(--line-lo) 1px, transparent 1px),
+    linear-gradient(90deg,var(--line-lo) 1px, transparent 1px);
+  background-size:auto,auto,44px 44px,44px 44px;
+}
+body:before{
+  content:"INTERNAL · NO SECRETS IN THIS DOCUMENT";position:fixed;inset:auto auto 28px 28px;
+  color:rgba(212,167,85,.12);font-family:var(--mono);font-weight:700;letter-spacing:.22em;
+  font-size:18px;z-index:0;pointer-events:none;transform:rotate(-4deg)
+}
+.top{
+  position:sticky;top:0;z-index:10;display:flex;gap:22px;align-items:center;justify-content:space-between;
+  padding:14px 34px;background:rgba(11,11,16,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)
+}
+.brand{font-family:Georgia,serif;font-style:italic;font-weight:900;font-size:18px}
+.brand .dot{color:var(--accent);padding:0 2px}
+.nav{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.nav a{color:var(--ink-mute);text-decoration:none}
+.nav a:hover{color:var(--accent)}
+.badge{font-family:var(--mono);font-size:10px;color:var(--accent);border:1px solid var(--accent-dim);padding:3px 10px;letter-spacing:.18em;text-transform:uppercase}
+.page{max-width:1120px;margin:0 auto;padding:46px 32px 80px;position:relative;z-index:1}
+.hero{padding:30px 0 40px;margin-bottom:42px;border-bottom:1px dashed var(--line)}
+.hero-tag{display:inline-block;margin-bottom:18px;padding:4px 12px;border:1px solid var(--accent-dim);background:rgba(212,167,85,.08);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+h1{font-family:Georgia,var(--serif);font-size:76px;line-height:.96;letter-spacing:-.035em;font-style:italic;margin-bottom:12px}
+h1 .sep{color:var(--accent);font-size:.72em;margin:0 8px}
+.zh{font-family:var(--serif);font-size:25px;letter-spacing:.12em;color:var(--ink-dim);font-weight:700;margin-bottom:18px}
+.tagline{max-width:800px;color:var(--ink-dim);font-size:15px}
+.meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;font-family:var(--mono);font-size:10.5px;color:var(--ink-mute);letter-spacing:.12em;text-transform:uppercase}
+.meta span{border:1px solid var(--line);padding:4px 9px;background:var(--paper-2)}
+.toc{background:var(--paper-2);border:1px solid var(--line);padding:24px 28px;margin:0 0 54px;position:relative}
+.toc:before{content:"CONTENTS · 目录";position:absolute;top:-10px;left:18px;background:var(--paper);padding:0 10px;color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.18em}
+.toc ol{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px}
+.toc a{display:grid;grid-template-columns:42px 1fr;color:var(--ink-dim);text-decoration:none}
+.toc a:hover{color:var(--accent-hi)}
+.toc .n{color:var(--accent);font-family:var(--mono);font-size:11px}
+.block{margin-bottom:66px}
+.sect-head{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:baseline;margin-bottom:26px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.sect-num{font-family:var(--mono);font-weight:800;font-size:30px;color:var(--accent)}
+.sect-num:before{content:"§";color:var(--accent-dim);margin-right:2px}
+.sect-title{font-family:var(--serif);font-size:27px;letter-spacing:.08em;font-weight:700}
+.sect-en{font-family:var(--mono);font-size:10.5px;color:var(--ink-mute);letter-spacing:.2em;text-transform:uppercase;margin-top:2px}
+h3{font-family:var(--serif);font-size:18px;letter-spacing:.04em;margin:26px 0 12px;border-left:3px solid var(--accent);padding-left:12px}
+h4{font-family:var(--serif);font-size:16px;margin:14px 0 8px;color:var(--ink)}
+p{color:var(--ink-dim);margin-bottom:12px}
+strong{color:var(--ink);font-weight:600}
+code{font-family:var(--mono);font-size:12.5px;background:var(--paper-4);color:var(--accent-hi);padding:1px 6px;border-radius:2px}
+ul,ol{color:var(--ink-dim);padding-left:22px;margin:8px 0 14px}
+li{padding:2px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--accent);padding:18px 20px}
+.card-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:16px;margin-bottom:4px}
+.card-sub{font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+.box,.critical,.ok,.info,.warn{padding:16px 20px;margin:16px 0;border-left:3px solid var(--info);background:linear-gradient(90deg,rgba(122,156,198,.07),transparent)}
+.critical{border:1px solid var(--danger);border-left:4px solid var(--danger);background:linear-gradient(90deg,rgba(212,90,74,.08),transparent)}
+.ok{border-left-color:var(--signal);background:linear-gradient(90deg,rgba(127,191,127,.07),transparent)}
+.warn{border-left-color:var(--warn);background:linear-gradient(90deg,rgba(230,160,82,.07),transparent)}
+.box-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--info);margin-bottom:8px}
+.critical .box-title{color:var(--danger)} .ok .box-title{color:var(--signal)} .warn .box-title{color:var(--warn)}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:var(--paper-2);border:1px solid var(--line);font-size:13px}
+th,td{padding:10px 13px;border-bottom:1px solid var(--line-lo);vertical-align:top;text-align:left}
+thead th{background:var(--paper-3);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+td.m{font-family:var(--mono);font-size:12px;color:var(--accent-hi)}
+td.okc{color:var(--signal)} td.warnc{color:var(--warn)} td.noc{color:var(--danger)}
+.steps{counter-reset:step;display:grid;gap:14px;margin:16px 0}
+.step{counter-increment:step;display:grid;grid-template-columns:56px 1fr;gap:18px;background:var(--paper-3);border-left:2px solid var(--accent-dim);padding:18px 22px}
+.step:before{content:counter(step,decimal-leading-zero);font-family:var(--mono);font-size:32px;font-weight:800;color:var(--accent);line-height:1}
+.cmd{position:relative;background:#07070b;border:1px solid var(--line);border-left:2px solid var(--accent);padding:16px 16px 16px 18px;margin:12px 0 16px;white-space:pre-wrap;overflow:auto;font-family:var(--mono);font-size:12px;line-height:1.72;color:var(--ink)}
+.copy{position:absolute;top:6px;right:6px;padding:3px 10px;background:transparent;border:1px solid var(--accent-dim);color:var(--accent);font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;cursor:pointer}
+.copy.done{background:var(--signal);border-color:var(--signal);color:#050507}
+.k{color:#ff79c6}.s{color:#f1fa8c}.c{color:#7780a0;font-style:italic}.v{color:#50fa7b}.n2{color:#bd93f9}
+.footer{margin-top:70px;padding-top:28px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:760px){h1{font-size:52px}.top{padding:12px 18px}.nav{display:none}.page{padding:34px 20px 60px}.toc ol{grid-template-columns:1fr}.step{grid-template-columns:1fr}.step:before{font-size:24px}}
+@media print{body{background:white;color:black}.top,.copy,body:before{display:none}.page{padding:18px}.cmd,.card,.step,.toc,.critical,.ok,.info,.warn,table{background:white;border-color:#bbb}.sect-title,h1,h3,h4{color:black}p,li,td{color:#222}}
+</style>
+</head>
+<body>
+<nav class="top">
+  <div class="brand">ArchIToken<span class="dot">·</span>VPN</div>
+  <div class="nav">
+    <a href="#s00">隐私</a><a href="#s01">变量</a><a href="#s02">全平台</a><a href="#s03">导入</a><a href="#s04">CLI</a><a href="#s05">分发</a><a href="#s06">故障</a>
+  </div>
+  <div class="badge">Colleague Safe Edition</div>
+</nav>
+<main class="page">
+<header class="hero">
+  <span class="hero-tag">INTERNAL SAFE HANDBOOK · NO EMBEDDED SECRETS · 2026</span>
+  <h1>Team<span class="sep">·</span>Access</h1>
+  <div class="zh">团队安全接入 · 全平台指南</div>
+  <p class="tagline">这是一份给用户使用的安全版手册。它只包含流程、检查项和占位符，不包含真实服务器 IP、面板路径、UUID、私钥、公钥、订阅地址、二维码或个人邮箱。真实凭证必须由管理员按成员单独发放，并且不得写进本文档。</p>
+  <div class="meta">
+    <span>Windows / macOS / Linux / WSL / Android / iOS / ChromeOS / NAS</span>
+    <span>Per-member credential</span>
+    <span>Offline HTML · No external assets</span>
+  </div>
+</header>
+
+<div class="toc">
+  <ol>
+    <li><a href="#s00"><span class="n">00</span><span>隐私和防外泄总原则</span></a></li>
+    <li><a href="#s01"><span class="n">01</span><span>配置变量和占位符</span></a></li>
+    <li><a href="#s02"><span class="n">02</span><span>全平台客户端选择</span></a></li>
+    <li><a href="#s03"><span class="n">03</span><span>一键导入与手动配置</span></a></li>
+    <li><a href="#s04"><span class="n">04</span><span>Linux / WSL / Server CLI</span></a></li>
+    <li><a href="#s05"><span class="n">05</span><span>团队发放、回收与换证</span></a></li>
+    <li><a href="#s06"><span class="n">06</span><span>验收、故障排查与截图规则</span></a></li>
+  </ol>
+</div>
+
+<section id="s00" class="block">
+  <div class="sect-head"><div class="sect-num">00</div><div><div class="sect-title">隐 私 和 防 外 泄 总 原 则</div><div class="sect-en">Privacy First</div></div></div>
+  <div class="critical">
+    <div class="box-title">必须遵守</div>
+    <p><strong>本文档禁止写入任何真实凭证。</strong>不得把 VLESS/VMess/Trojan/SS 链接、二维码、UUID、Reality PublicKey、ShortID、订阅 URL、面板 URL、面板路径、管理员账号、邮箱、Server 酱/Telegram/Slack token 写进 HTML、截图、群聊、GitHub、Notion、飞书公开文档或任何可被转发的位置。</p>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="card-title">一人一证</div><div class="card-sub">Per-member UUID</div><p>每位用户使用独立成员凭证，不共享 Owner 凭证。成员离职、设备丢失或疑似外泄时，只撤销该成员，不影响其他人。</p></div>
+    <div class="card"><div class="card-title">文档无密</div><div class="card-sub">No secrets in handbook</div><p>HTML 只放占位符和 SOP。真实链接由管理员通过密码管理器、端到端加密私聊或一次性安全通道单独发放。</p></div>
+    <div class="card"><div class="card-title">最小可见</div><div class="card-sub">Least disclosure</div><p>用户只需要自己的链接，不需要知道面板地址、其他成员列表、服务端配置、私钥、日志位置或管理员脚本。</p></div>
+    <div class="card"><div class="card-title">可追踪可回收</div><div class="card-sub">Traceable revoke</div><p>凭证备注使用不含真实姓名的内部代号，例如 <code>member-a-laptop</code>。外泄时按代号定位并撤销。</p></div>
+  </div>
+  <h3>用户使用守则</h3>
+  <table>
+    <thead><tr><th>允许</th><th>避免</th><th>禁止</th></tr></thead>
+    <tbody>
+      <tr><td>在公司批准的设备上使用自己的成员凭证</td><td>把截图发到多人群</td><td>转发链接、二维码、配置文件给第三人</td></tr>
+      <tr><td>用浏览器打开测试页确认出口 IP</td><td>在陌生客户端导入凭证</td><td>把配置上传到公开仓库、网盘公开链接、AI 对话或论坛</td></tr>
+      <tr><td>设备丢失或异常时立即通知管理员</td><td>把 Owner/管理员凭证当作成员凭证</td><td>使用该线路做 P2P、扫描、攻击、撞库、垃圾邮件等高风险行为</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s01" class="block">
+  <div class="sect-head"><div class="sect-num">01</div><div><div class="sect-title">配 置 变 量 和 占 位 符</div><div class="sect-en">Template Variables</div></div></div>
+  <p>管理员发放给每位成员的真实参数必须单独传递。本文档中的 <code>{...}</code> 都是占位符，不代表真实值。</p>
+  <table>
+    <thead><tr><th>变量</th><th>含义</th><th>是否可给用户</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td class="m">{VPN_NAME}</td><td>节点显示名</td><td class="okc">可以</td><td>例如 ArchIToken-VPN / Team VPN，不含真实机房细节</td></tr>
+      <tr><td class="m">{MEMBER_CONFIG_URL}</td><td>成员专属导入链接</td><td class="warnc">仅给本人</td><td>不要写入 HTML；单独加密发送</td></tr>
+      <tr><td class="m">{MEMBER_QR}</td><td>成员专属二维码</td><td class="warnc">仅给本人</td><td>二维码等价于明文凭证</td></tr>
+      <tr><td class="m">{EXPECTED_EXIT_IP}</td><td>验证用出口 IP（主/备节点之一）</td><td class="warnc">按需</td><td>可只发给需要自检的用户；用户版默认写占位符</td></tr>
+      <tr><td class="m">{PRIMARY_SERVER_IP}</td><td>主节点服务器地址</td><td class="warnc">谨慎</td><td>手动配置时才需要；默认不公开</td></tr>
+      <tr><td class="m">{SECONDARY_SERVER_IP}</td><td>备用节点服务器地址</td><td class="warnc">谨慎</td><td>手动配置时才需要；默认不公开</td></tr>
+      <tr><td class="m">{PANEL_URL}</td><td>管理面板地址</td><td class="noc">禁止</td><td>管理员专用</td></tr>
+      <tr><td class="m">{PRIVATE_KEY}</td><td>服务端私钥</td><td class="noc">禁止</td><td>不得离开服务端</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><div class="box-title">推荐发放方式</div><p>管理员给每位用户发送一条成员专属链接，并附上本 HTML。链接不要放在 HTML 内；HTML 可以广泛发，链接只能给本人。</p></div>
+</section>
+
+<section id="s02" class="block">
+  <div class="sect-head"><div class="sect-num">02</div><div><div class="sect-title">全 平 台 客 户 端 选 择</div><div class="sect-en">All-platform Client Matrix</div></div></div>
+  <p>统一原则：选择支持 <strong>VLESS + TCP + Reality</strong> 的客户端；如果管理员启用了额外加密或 Flow，则客户端必须明确支持对应字段。无法确认时先导入测试，失败就换兼容客户端。</p>
+  <table>
+    <thead><tr><th>平台</th><th>首选方式</th><th>备用方式</th><th>给用户的提示</th></tr></thead>
+    <tbody>
+      <tr><td>Windows 10/11 x64/ARM64</td><td>v2rayN 7.21.3 / Hiddify / NekoRay</td><td>Xray CLI + 系统代理</td><td>导入链接后只开启一个代理入口；不要同时开启其他代理软件的系统代理。</td></tr>
+      <tr><td>macOS Apple Silicon / Intel</td><td>V2RayTun / v2rayN 7.21.3 / Hiddify</td><td>Xray CLI + launchd</td><td>若导入后缺字段，改用剪贴板导入，不用扫码。</td></tr>
+      <tr><td>Linux Desktop</td><td>v2rayN 7.21.3 / Hiddify / NekoRay</td><td>Xray CLI + systemd</td><td>桌面用户优先 GUI；服务器用户用 CLI。</td></tr>
+      <tr><td>Linux Server / DGX / ARM64</td><td>Xray-core v26.3.27 + systemd</td><td>Docker sidecar</td><td>只监听本机 <code>127.0.0.1</code> 的 SOCKS/HTTP 端口。</td></tr>
+      <tr><td>WSL2</td><td>使用 Windows 主机代理</td><td>WSL 内部 Xray CLI</td><td>优先走 Windows 代理，少维护一套服务。</td></tr>
+      <tr><td>Android</td><td>v2rayNG 2.1.7 / Hiddify</td><td>NekoBox Android</td><td>只从官方发布页或应用商店下载；导入后打开 VPN 模式。</td></tr>
+      <tr><td>iOS / iPadOS</td><td>V2RayTun / Hiddify</td><td>其他支持 Reality 的客户端</td><td>客户端内核差异大，导入后必须用测试页确认出口。</td></tr>
+      <tr><td>ChromeOS</td><td>Android 客户端</td><td>Linux 容器内 Xray CLI</td><td>企业托管设备需管理员允许 VPN 权限。</td></tr>
+      <tr><td>NAS / OpenWrt / 路由器</td><td>管理员专用部署</td><td>按设备插件能力验证</td><td>不建议普通用户自行在路由器配置，外泄面大。</td></tr>
+      <tr><td>Docker / Kubernetes</td><td>Xray sidecar</td><td>HTTP/SOCKS egress proxy</td><td>仅限内部服务，凭证存 Secret，不写镜像和 Git。</td></tr>
+    </tbody>
+  </table>
+  <h3>固定软件下载源</h3>
+  <table>
+    <thead><tr><th>平台/用途</th><th>固定版本</th><th>下载源</th><th>推荐文件</th></tr></thead>
+    <tbody>
+      <tr><td>Windows x64</td><td>v2rayN 7.21.3</td><td><a href="https://github.com/2dust/v2rayN/releases/tag/7.21.3" target="_blank">2dust/v2rayN</a></td><td class="m">v2rayN-windows-64-desktop.zip</td></tr>
+      <tr><td>Windows ARM64</td><td>v2rayN 7.21.3</td><td><a href="https://github.com/2dust/v2rayN/releases/tag/7.21.3" target="_blank">2dust/v2rayN</a></td><td class="m">v2rayN-windows-arm64-desktop.zip</td></tr>
+      <tr><td>macOS Intel</td><td>v2rayN 7.21.3 / V2RayTun</td><td><a href="https://github.com/2dust/v2rayN/releases/tag/7.21.3" target="_blank">v2rayN macOS</a> · <a href="https://v2raytun.com/" target="_blank">v2RayTun</a></td><td class="m">v2rayN-macos-64.dmg</td></tr>
+      <tr><td>macOS Apple Silicon</td><td>v2rayN 7.21.3 / V2RayTun</td><td><a href="https://github.com/2dust/v2rayN/releases/tag/7.21.3" target="_blank">v2rayN macOS</a> · <a href="https://v2raytun.com/" target="_blank">v2RayTun</a></td><td class="m">v2rayN-macos-arm64.dmg</td></tr>
+      <tr><td>Android</td><td>v2rayNG 2.1.7</td><td><a href="https://github.com/2dust/v2rayNG/releases/tag/2.1.7" target="_blank">2dust/v2rayNG</a></td><td class="m">v2rayNG_2.1.7_arm64-v8a.apk</td></tr>
+      <tr><td>Android 通用包</td><td>v2rayNG 2.1.7</td><td><a href="https://github.com/2dust/v2rayNG/releases/tag/2.1.7" target="_blank">2dust/v2rayNG</a></td><td class="m">v2rayNG_2.1.7_universal.apk</td></tr>
+      <tr><td>iOS / iPadOS</td><td>V2RayTun</td><td><a href="https://v2raytun.com/" target="_blank">v2RayTun 官方站</a></td><td>按官网跳转 App Store</td></tr>
+      <tr><td>Linux x86_64</td><td>Xray-core v26.3.27</td><td><a href="https://github.com/XTLS/Xray-core/releases/tag/v26.3.27" target="_blank">XTLS/Xray-core</a></td><td class="m">Xray-linux-64.zip</td></tr>
+      <tr><td>Linux ARM64</td><td>Xray-core v26.3.27</td><td><a href="https://github.com/XTLS/Xray-core/releases/tag/v26.3.27" target="_blank">XTLS/Xray-core</a></td><td class="m">Xray-linux-arm64-v8a.zip</td></tr>
+    </tbody>
+  </table>
+  <div class="info"><div class="box-title">剪贴板优先</div><p>跨平台导入时，剪贴板导入比扫码更可靠。二维码有时会丢 query 参数，导致 Reality、Flow、加密字段缺失。</p></div>
+</section>
+
+<section id="s03" class="block">
+  <div class="sect-head"><div class="sect-num">03</div><div><div class="sect-title">一 键 导 入 与 手 动 配 置</div><div class="sect-en">Import & Manual Config</div></div></div>
+  <h3>推荐：一键导入</h3>
+  <div class="steps">
+    <div class="step"><div><h4>从管理员处获取个人链接</h4><p>只接收发给你本人的 <code>{MEMBER_CONFIG_URL}</code>。不要要求管理员把所有人的链接发群里。</p></div></div>
+    <div class="step"><div><h4>客户端选择“从剪贴板导入”</h4><p>复制个人链接，进入客户端，选择从剪贴板/URL 导入。导入后节点名应显示为 <code>{VPN_NAME}-{MEMBER_ID}</code> 或管理员指定名称。</p></div></div>
+    <div class="step"><div><h4>启用客户端代理或 VPN/TUN 接管</h4><p>桌面系统一次只开启一个代理或 TUN 接管入口；手机系统启用 VPN 接管。ArchIToken-VPN 托盘只保留 <code>全局代理</code> 与 <code>国内直连</code> 两个模式，日常优先使用 <code>国内直连</code>。</p></div></div>
+    <div class="step"><div><h4>验证出口</h4><p>访问 <code>https://ip.sb</code> 或 <code>https://ifconfig.me</code>。看到管理员告知的 <code>{PRIMARY_EXIT_IP}</code> 或 <code>{SECONDARY_EXIT_IP}</code> 即成功。</p></div></div>
+  </div>
+  <div class="info"><div class="box-title">托盘状态灯</div><p>绿色表示正常运行或当前出口，黄色表示可切换、待检测或预警，红色表示服务异常、节点不可用或出口异常。看到红色时不要重复扫码，先把错误截图按脱敏规则发给管理员。</p></div>
+
+  <h3>手动配置字段模板</h3>
+  <p>只有当客户端无法导入 URL 时才手动填写。以下字段必须由管理员单独给本人，不得从其他用户处复制。</p>
+  <table>
+    <thead><tr><th>字段</th><th>模板</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>协议</td><td class="m">VLESS</td><td>必须一致</td></tr>
+      <tr><td>地址</td><td class="m">{PRIMARY_SERVER_IP} / {SECONDARY_SERVER_IP}</td><td>由管理员提供；先导入订阅，手动配置仅排障使用</td></tr>
+      <tr><td>端口</td><td class="m">{PORT}</td><td>通常是 HTTPS 标准端口，但以管理员给出的值为准</td></tr>
+      <tr><td>UUID / ID</td><td class="m">{MEMBER_UUID}</td><td>个人专属，不得共享</td></tr>
+      <tr><td>传输</td><td class="m">tcp</td><td>以管理员提供为准</td></tr>
+      <tr><td>安全</td><td class="m">reality</td><td>大小写按客户端要求填写</td></tr>
+      <tr><td>SNI / serverName</td><td class="m">{SNI}</td><td>由管理员提供</td></tr>
+      <tr><td>PublicKey</td><td class="m">{REALITY_PUBLIC_KEY}</td><td>不是私钥，但仍属于凭证组成部分</td></tr>
+      <tr><td>ShortID</td><td class="m">{REALITY_SHORT_ID}</td><td>成员配置的一部分</td></tr>
+      <tr><td>Fingerprint</td><td class="m">{FINGERPRINT}</td><td>常见值如 chrome；以管理员提供为准</td></tr>
+      <tr><td>Flow / Encryption</td><td class="m">{FLOW_OR_ENCRYPTION}</td><td>客户端不支持时不要硬填，先换兼容客户端</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s04" class="block">
+  <div class="sect-head"><div class="sect-num">04</div><div><div class="sect-title">Linux / WSL / Server CLI</div><div class="sect-en">Headless Setup</div></div></div>
+  <p>只给需要命令行环境的用户使用。普通桌面和手机用户可以跳过本节。</p>
+  <div class="cmd"><button class="copy" data-copy="1">COPY</button># 1) 仅示例：创建本机代理端口。不要把真实 UUID/密钥写入公开脚本。
+sudo install -d -m 700 /etc/xray-client
+sudo nano /etc/xray-client/config.json
+
+# 2) 服务只监听本机，防止局域网泄露
+# SOCKS: 127.0.0.1:10808
+# HTTP : 127.0.0.1:10809
+
+# 3) 校验并启动
+/usr/local/bin/xray run -test -c /etc/xray-client/config.json
+sudo systemctl restart xray-client
+
+# 4) 验证
+curl --socks5-hostname 127.0.0.1:10808 -4 https://ifconfig.me
+curl -x http://127.0.0.1:10809 -4 https://ifconfig.me</div>
+  <div class="critical"><div class="box-title">本机监听限制</div><p>CLI 代理端口必须只监听 <code>127.0.0.1</code>。不要监听 <code>0.0.0.0</code>，否则局域网内其他设备可能无密码使用你的代理。</p></div>
+</section>
+
+<section id="s05" class="block">
+  <div class="sect-head"><div class="sect-num">05</div><div><div class="sect-title">团队发放、回收与换证</div><div class="sect-en">Credential Lifecycle</div></div></div>
+  <table>
+    <thead><tr><th>场景</th><th>管理员动作</th><th>用户动作</th></tr></thead>
+    <tbody>
+      <tr><td>新成员加入</td><td>创建个人 UUID / 链接，设置备注和限速，单独发放</td><td>导入个人链接并验证出口</td></tr>
+      <tr><td>换设备</td><td>可复用同一成员凭证或为新设备单独建凭证</td><td>旧设备确认删除配置</td></tr>
+      <tr><td>设备丢失</td><td>立即禁用该成员 UUID，必要时轮换 ShortID</td><td>说明最后使用时间和设备类型</td></tr>
+      <tr><td>成员离职</td><td>撤销个人凭证，清理备注和统计，更新台账</td><td>删除本地客户端配置</td></tr>
+      <tr><td>疑似外泄</td><td>先禁用个人凭证；若无法定位，轮换全部成员凭证</td><td>等待管理员重新发新链接</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><div class="box-title">不要单链接共享</div><p>单链接共享虽然省事，但一旦外泄无法定位责任人。团队使用应默认“一人一证”，这是隐私和可回收性的底线。</p></div>
+</section>
+
+<section id="s06" class="block">
+  <div class="sect-head"><div class="sect-num">06</div><div><div class="sect-title">验收、故障排查与截图规则</div><div class="sect-en">Validation & Support</div></div></div>
+  <h3>成功标准</h3>
+  <table>
+    <thead><tr><th>检查项</th><th>成功现象</th><th>失败时处理</th></tr></thead>
+    <tbody>
+      <tr><td>客户端已连接</td><td>客户端状态显示 connected / running</td><td>重新导入链接，确认没有复制断行</td></tr>
+      <tr><td>出口 IP</td><td>测试页显示 <code>{PRIMARY_EXIT_IP}</code> 或 <code>{SECONDARY_EXIT_IP}</code></td><td>确认客户端代理、VPN 或 TUN 接管已开启</td></tr>
+      <tr><td>Google / GitHub</td><td>HTTP 200 或正常打开</td><td>换客户端或联系管理员查看服务端状态</td></tr>
+      <tr><td>某站 403</td><td>说明“到达但被目标站拒绝”</td><td>优先用浏览器测试，不把 403 当成 VPN 故障</td></tr>
+    </tbody>
+  </table>
+
+  <h3>截图求助前必须脱敏</h3>
+  <ul>
+    <li>遮住 URL、二维码、UUID、节点链接、账号邮箱、浏览器左侧个人会话列表。</li>
+    <li>只保留错误码、客户端名称、系统平台、连接状态、出口 IP 是否匹配。</li>
+    <li>不要把完整配置 JSON、完整 VLESS URL、二维码截图发群里。</li>
+  </ul>
+  <div class="ok"><div class="box-title">安全求助模板</div><p>“平台：Windows / 客户端：v2rayN / 状态：已连接 / 出口 IP：不匹配 / 错误：HTTP 403 或超时 / 已尝试：重新导入链接、重启客户端。”</p></div>
+</section>
+
+<footer class="footer">
+  <span>ArchIToken-VPN · COLLEAGUE SAFE EDITION</span>
+  <span>No embedded secrets · no external assets</span>
+  <span>2026-04-28</span>
+</footer>
+</main>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(btn=>{
+  btn.addEventListener("click", async ()=>{
+    const block = btn.closest(".cmd");
+    const copy = block ? block.innerText.replace(/^COPY\s*/,'').trim() : "";
+    try {
+      await navigator.clipboard.writeText(copy);
+      const old = btn.textContent;
+      btn.textContent = "✓";
+      btn.classList.add("done");
+      setTimeout(()=>{btn.textContent=old;btn.classList.remove("done")}, 1400);
+    } catch(e) { alert("复制失败，请手动选择代码块复制"); }
+  });
+});
+</script>
+
+</body>
+</html>

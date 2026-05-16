@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+nodes.json
+mode.json
+*.bak*
+*.log
+*.zip
+.env
+.env.*

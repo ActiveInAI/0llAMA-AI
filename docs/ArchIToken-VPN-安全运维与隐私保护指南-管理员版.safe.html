@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: blob:; img-src 'self' data:; connect-src 'none'; font-src 'self' data:; base-uri 'none'; form-action 'none'">
+<title>ArchIToken-VPN · 安全运维与隐私保护指南</title>
+<style>
+:root {
+  --ink:#ebe6d8; --ink-dim:#a9a18e; --ink-mute:#6e695a;
+  --paper:#0b0b10; --paper-2:#13131a; --paper-3:#1c1c26; --paper-4:#242432;
+  --line:#2a2a36; --line-lo:#1e1e28;
+  --accent:#d4a755; --accent-hi:#f0c878; --accent-dim:#8a6d30;
+  --signal:#7fbf7f; --warn:#e6a052; --danger:#d45a4a; --info:#7a9cc6;
+  --mono:"SF Mono","JetBrains Mono","Cascadia Code",Consolas,Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",Arial,sans-serif;
+  --serif:"Noto Serif SC","Songti SC",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:82px}
+body{
+  min-height:100vh;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.78;letter-spacing:.015em;
+  background-image:
+    radial-gradient(circle at 12% 0%,rgba(212,167,85,.08),transparent 46%),
+    radial-gradient(circle at 92% 100%,rgba(122,156,198,.06),transparent 48%),
+    linear-gradient(var(--line-lo) 1px, transparent 1px),
+    linear-gradient(90deg,var(--line-lo) 1px, transparent 1px);
+  background-size:auto,auto,44px 44px,44px 44px;
+}
+body:before{
+  content:"INTERNAL · NO SECRETS IN THIS DOCUMENT";position:fixed;inset:auto auto 28px 28px;
+  color:rgba(212,167,85,.12);font-family:var(--mono);font-weight:700;letter-spacing:.22em;
+  font-size:18px;z-index:0;pointer-events:none;transform:rotate(-4deg)
+}
+.top{
+  position:sticky;top:0;z-index:10;display:flex;gap:22px;align-items:center;justify-content:space-between;
+  padding:14px 34px;background:rgba(11,11,16,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)
+}
+.brand{font-family:Georgia,serif;font-style:italic;font-weight:900;font-size:18px}
+.brand .dot{color:var(--accent);padding:0 2px}
+.nav{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.nav a{color:var(--ink-mute);text-decoration:none}
+.nav a:hover{color:var(--accent)}
+.badge{font-family:var(--mono);font-size:10px;color:var(--accent);border:1px solid var(--accent-dim);padding:3px 10px;letter-spacing:.18em;text-transform:uppercase}
+.page{max-width:1120px;margin:0 auto;padding:46px 32px 80px;position:relative;z-index:1}
+.hero{padding:30px 0 40px;margin-bottom:42px;border-bottom:1px dashed var(--line)}
+.hero-tag{display:inline-block;margin-bottom:18px;padding:4px 12px;border:1px solid var(--accent-dim);background:rgba(212,167,85,.08);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+h1{font-family:Georgia,var(--serif);font-size:76px;line-height:.96;letter-spacing:-.035em;font-style:italic;margin-bottom:12px}
+h1 .sep{color:var(--accent);font-size:.72em;margin:0 8px}
+.zh{font-family:var(--serif);font-size:25px;letter-spacing:.12em;color:var(--ink-dim);font-weight:700;margin-bottom:18px}
+.tagline{max-width:800px;color:var(--ink-dim);font-size:15px}
+.meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;font-family:var(--mono);font-size:10.5px;color:var(--ink-mute);letter-spacing:.12em;text-transform:uppercase}
+.meta span{border:1px solid var(--line);padding:4px 9px;background:var(--paper-2)}
+.toc{background:var(--paper-2);border:1px solid var(--line);padding:24px 28px;margin:0 0 54px;position:relative}
+.toc:before{content:"CONTENTS · 目录";position:absolute;top:-10px;left:18px;background:var(--paper);padding:0 10px;color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.18em}
+.toc ol{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px}
+.toc a{display:grid;grid-template-columns:42px 1fr;color:var(--ink-dim);text-decoration:none}
+.toc a:hover{color:var(--accent-hi)}
+.toc .n{color:var(--accent);font-family:var(--mono);font-size:11px}
+.block{margin-bottom:66px}
+.sect-head{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:baseline;margin-bottom:26px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.sect-num{font-family:var(--mono);font-weight:800;font-size:30px;color:var(--accent)}
+.sect-num:before{content:"§";color:var(--accent-dim);margin-right:2px}
+.sect-title{font-family:var(--serif);font-size:27px;letter-spacing:.08em;font-weight:700}
+.sect-en{font-family:var(--mono);font-size:10.5px;color:var(--ink-mute);letter-spacing:.2em;text-transform:uppercase;margin-top:2px}
+h3{font-family:var(--serif);font-size:18px;letter-spacing:.04em;margin:26px 0 12px;border-left:3px solid var(--accent);padding-left:12px}
+h4{font-family:var(--serif);font-size:16px;margin:14px 0 8px;color:var(--ink)}
+p{color:var(--ink-dim);margin-bottom:12px}
+strong{color:var(--ink);font-weight:600}
+code{font-family:var(--mono);font-size:12.5px;background:var(--paper-4);color:var(--accent-hi);padding:1px 6px;border-radius:2px}
+ul,ol{color:var(--ink-dim);padding-left:22px;margin:8px 0 14px}
+li{padding:2px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--accent);padding:18px 20px}
+.card-title{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:16px;margin-bottom:4px}
+.card-sub{font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+.box,.critical,.ok,.info,.warn{padding:16px 20px;margin:16px 0;border-left:3px solid var(--info);background:linear-gradient(90deg,rgba(122,156,198,.07),transparent)}
+.critical{border:1px solid var(--danger);border-left:4px solid var(--danger);background:linear-gradient(90deg,rgba(212,90,74,.08),transparent)}
+.ok{border-left-color:var(--signal);background:linear-gradient(90deg,rgba(127,191,127,.07),transparent)}
+.warn{border-left-color:var(--warn);background:linear-gradient(90deg,rgba(230,160,82,.07),transparent)}
+.box-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--info);margin-bottom:8px}
+.critical .box-title{color:var(--danger)} .ok .box-title{color:var(--signal)} .warn .box-title{color:var(--warn)}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:var(--paper-2);border:1px solid var(--line);font-size:13px}
+th,td{padding:10px 13px;border-bottom:1px solid var(--line-lo);vertical-align:top;text-align:left}
+thead th{background:var(--paper-3);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+td.m{font-family:var(--mono);font-size:12px;color:var(--accent-hi)}
+td.okc{color:var(--signal)} td.warnc{color:var(--warn)} td.noc{color:var(--danger)}
+.steps{counter-reset:step;display:grid;gap:14px;margin:16px 0}
+.step{counter-increment:step;display:grid;grid-template-columns:56px 1fr;gap:18px;background:var(--paper-3);border-left:2px solid var(--accent-dim);padding:18px 22px}
+.step:before{content:counter(step,decimal-leading-zero);font-family:var(--mono);font-size:32px;font-weight:800;color:var(--accent);line-height:1}
+.cmd{position:relative;background:#07070b;border:1px solid var(--line);border-left:2px solid var(--accent);padding:16px 16px 16px 18px;margin:12px 0 16px;white-space:pre-wrap;overflow:auto;font-family:var(--mono);font-size:12px;line-height:1.72;color:var(--ink)}
+.copy{position:absolute;top:6px;right:6px;padding:3px 10px;background:transparent;border:1px solid var(--accent-dim);color:var(--accent);font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;cursor:pointer}
+.copy.done{background:var(--signal);border-color:var(--signal);color:#050507}
+.k{color:#ff79c6}.s{color:#f1fa8c}.c{color:#7780a0;font-style:italic}.v{color:#50fa7b}.n2{color:#bd93f9}
+.footer{margin-top:70px;padding-top:28px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--ink-mute);letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:760px){h1{font-size:52px}.top{padding:12px 18px}.nav{display:none}.page{padding:34px 20px 60px}.toc ol{grid-template-columns:1fr}.step{grid-template-columns:1fr}.step:before{font-size:24px}}
+@media print{body{background:white;color:black}.top,.copy,body:before{display:none}.page{padding:18px}.cmd,.card,.step,.toc,.critical,.ok,.info,.warn,table{background:white;border-color:#bbb}.sect-title,h1,h3,h4{color:black}p,li,td{color:#222}}
+</style>
+</head>
+<body>
+<nav class="top">
+  <div class="brand">ArchIToken<span class="dot">·</span>VPN</div>
+  <div class="nav">
+    <a href="#o00">基线</a><a href="#o01">凭证</a><a href="#o02">脱敏</a><a href="#o03">日志</a><a href="#o04">监控</a><a href="#o05">应急</a><a href="#o06">用户支持</a>
+  </div>
+  <div class="badge">Ops Privacy Edition</div>
+</nav>
+<main class="page">
+<header class="hero">
+  <span class="hero-tag">OPS PRIVACY PLAYBOOK · REDACTION FIRST · 2026</span>
+  <h1>Ops<span class="sep">·</span>Privacy</h1>
+  <div class="zh">安全运维 · 防外泄增强指南</div>
+  <p class="tagline">管理员版 SOP：最小化日志、凭证生命周期、文档脱敏、全平台支持、监控告警、泄露应急。本文档同样不包含真实凭证；所有命令使用占位符。</p>
+  <div class="meta">
+    <span>Per-member UUID</span><span>Log minimization</span><span>Redaction scanner</span><span>Incident ready</span>
+  </div>
+</header>
+
+<div class="toc">
+  <ol>
+    <li><a href="#o00"><span class="n">00</span><span>管理员安全基线</span></a></li>
+    <li><a href="#o01"><span class="n">01</span><span>成员凭证生命周期</span></a></li>
+    <li><a href="#o02"><span class="n">02</span><span>文档防外泄脱敏检查</span></a></li>
+    <li><a href="#o03"><span class="n">03</span><span>日志最小化与自动清理</span></a></li>
+    <li><a href="#o04"><span class="n">04</span><span>监控告警与健康检查</span></a></li>
+    <li><a href="#o05"><span class="n">05</span><span>泄露应急和回滚</span></a></li>
+    <li><a href="#o06"><span class="n">06</span><span>全平台支持台账</span></a></li>
+  </ol>
+</div>
+
+<section id="o00" class="block">
+  <div class="sect-head"><div class="sect-num">00</div><div><div class="sect-title">管理员安全基线</div><div class="sect-en">Security Baseline</div></div></div>
+  <div class="critical"><div class="box-title">核心原则</div><p>管理员不能把真实节点凭证写入任何“可群发文档”。所有 HTML、Markdown、PPT、截图、工单、AI 对话都视为可能被转发。真实凭证只存在于服务端配置、密码管理器、成员专属加密消息中；当前生产覆盖主/备两个出口节点。</p></div>
+  <h3>当前生产节点清单</h3>
+  <table>
+    <thead><tr><th>角色</th><th>出口 / 服务器 IP</th><th>用途</th><th>发放规则</th></tr></thead>
+    <tbody>
+      <tr><td>USA-LAX-A1 · 美国 洛杉矶</td><td class="m">203.0.113.10</td><td>主节点、二维码主链接、首选出口验证</td><td>美国 VPS 续费或流量恢复后继续作为主出口，禁止复用 Owner 凭证</td></tr>
+      <tr><td>NLD-AMS-A1 · 荷兰 阿姆斯特丹</td><td class="m">198.51.100.20</td><td>备用节点、漫游切换、主节点维护兜底</td><td>443 已验证可连接；主节点维护期间可优先发放备用入口</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><div class="box-title">用户版处理</div><p>用户安全版文档仍使用占位符；真实 VLESS、订阅 URL、二维码和 UUID 只通过成员专属加密渠道发放。</p></div>
+
+  <table>
+    <thead><tr><th>资产</th><th>存放位置</th><th>权限</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td>服务端配置</td><td class="m">/usr/local/etc/xray/config.json</td><td>root 640/600</td><td>包含私钥，不导出</td></tr>
+      <tr><td>成员参数文件</td><td class="m">/root/{MEMBER_ID}.env</td><td>root 600</td><td>临时使用；发放后可归档到密码库</td></tr>
+      <tr><td>本机客户端配置</td><td class="m">/etc/xray-client/config.json</td><td>root 600/640</td><td>含成员出站参数，禁止贴日志</td></tr>
+      <tr><td>用户 HTML 手册</td><td class="m">*.html</td><td>可发</td><td>必须无真实凭证</td></tr>
+      <tr><td>备份</td><td class="m">/opt/architoken-vpn/backups/</td><td>root 700</td><td>建议加密后异地保存</td></tr>
+    </tbody>
+  </table>
+  <div class="cmd"><button class="copy" data-copy="1">COPY</button># 服务端权限基线
+sudo chown root:root /root/*.env 2&gt;/dev/null || true
+sudo chmod 600 /root/*.env 2&gt;/dev/null || true
+sudo chown root:root /usr/local/etc/xray/config.json
+sudo chmod 600 /usr/local/etc/xray/config.json
+
+# 本机客户端权限基线
+sudo chown root:root /etc/xray-client/config.json
+sudo chmod 600 /etc/xray-client/config.json</div>
+</section>
+
+<section id="o01" class="block">
+  <div class="sect-head"><div class="sect-num">01</div><div><div class="sect-title">成员凭证生命周期</div><div class="sect-en">Credential Lifecycle</div></div></div>
+  <h3>默认策略：一人一证，一设备一备注</h3>
+  <table>
+    <thead><tr><th>角色</th><th>备注命名</th><th>限速</th><th>处理方式</th></tr></thead>
+    <tbody>
+      <tr><td>Owner</td><td class="m">owner-main / owner-dgx</td><td>不限或高限额</td><td>仅本人设备，绝不发给用户</td></tr>
+      <tr><td>成员</td><td class="m">member-a-laptop / member-a-phone</td><td>按需限速</td><td>每人独立 UUID，便于撤销</td></tr>
+      <tr><td>临时协作</td><td class="m">temp-yyyymmdd-project</td><td>低限额 + 到期</td><td>设置到期时间，到期自动失效</td></tr>
+      <tr><td>测试</td><td class="m">test-short-lived</td><td>低限额</td><td>测试完成立即删除</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><div class="box-title">不要共享 Owner</div><p>Owner 凭证一旦泄露，所有流量都混在一起，无法定位责任人。团队越小越容易因为信任而偷懒，但运维上必须可撤销、可追踪、可审计。</p></div>
+
+  <h3>发放 SOP</h3>
+  <div class="steps">
+    <div class="step"><div><h4>创建成员条目</h4><p>在面板或服务端配置中创建新 UUID，备注使用内部代号，不使用真实姓名、手机号、邮箱。</p></div></div>
+    <div class="step"><div><h4>生成个人链接</h4><p>确认链接只包含该成员 UUID；不要复用 Owner 链接。截图二维码前先确认屏幕无其他凭证。</p></div></div>
+    <div class="step"><div><h4>单独发送</h4><p>通过密码管理器、端到端加密私聊或一次性安全渠道发给本人。禁止群发。</p></div></div>
+    <div class="step"><div><h4>登记台账</h4><p>记录成员代号、设备类型、发放时间、到期时间、限速、是否已验证。</p></div></div>
+  </div>
+</section>
+
+<section id="o02" class="block">
+  <div class="sect-head"><div class="sect-num">02</div><div><div class="sect-title">文档防外泄脱敏检查</div><div class="sect-en">Redaction Gate</div></div></div>
+  <p>每次把 HTML/Markdown/PDF 发给用户前，先运行脱敏扫描。若命中 VPN URL、UUID、私钥、公钥、非批准真实 IP、面板路径、Webhook Token，就不允许发出。管理员版允许出现当前生产节点 IP，但用户版不允许出现完整凭证。</p>
+  <div class="cmd"><button class="copy" data-copy="1">COPY</button>cat &gt; /tmp/architoken-vpn-redaction-scan.py &lt;&lt;&#x27;PY&#x27;
+import re, sys, pathlib
+
+# 允许出现的文档/本机地址：环回、私网、RFC 5737 文档地址、占位符
+ALLOW_IP_PREFIX = (
+    &quot;127.&quot;, &quot;10.&quot;, &quot;192.168.&quot;, &quot;172.16.&quot;, &quot;172.17.&quot;, &quot;172.18.&quot;, &quot;172.19.&quot;, &quot;172.20.&quot;,
+    &quot;203.0.113.&quot;, &quot;198.51.100.&quot;, &quot;192.0.2.&quot;, &quot;0.0.0.0&quot;, &quot;203.0.113.10&quot;, &quot;198.51.100.20&quot;
+)
+
+PATTERNS = {
+    &quot;VPN URL&quot;: r&quot;\b(vless|vmess|trojan|ss|hysteria2|tuic)://[^\s\&quot;&#x27;&lt;]+&quot;,
+    &quot;UUID&quot;: r&quot;\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b&quot;,
+    &quot;PrivateKey field&quot;: r&quot;(?i)(privateKey|private_key|PrivateKey)\s*[:=]\s*[\&quot;&#x27;]?[^\&quot;&#x27;\s&lt;&gt;{}]+&quot;,
+    &quot;PublicKey field&quot;: r&quot;(?i)(publicKey|public_key|PublicKey|pbk)\s*[:=]\s*[\&quot;&#x27;]?[^\&quot;&#x27;\s&lt;&gt;{}]+&quot;,
+    &quot;ShortID field&quot;: r&quot;(?i)(shortId|shortIds|sid)\s*[:=]\s*[\&quot;&#x27;]?[^\&quot;&#x27;\s&lt;&gt;{}]+&quot;,
+    &quot;Password/Token&quot;: r&quot;(?i)(password|passwd|token|secret|sckey|sendkey|webhook)\s*[:=]\s*[\&quot;&#x27;]?[^\&quot;&#x27;\s&lt;&gt;{}]+&quot;,
+    &quot;Panel path&quot;: r&quot;https?://[^\&quot;&#x27;\s&lt;]+:[0-9]{2,5}/[A-Za-z0-9_-]{8,}&quot;,
+    &quot;Email&quot;: r&quot;\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b&quot;,
+}
+
+ip_pat = re.compile(r&quot;\b(?:\d{1,3}\.){3}\d{1,3}\b&quot;)
+failed = False
+
+for fname in sys.argv[1:]:
+    p = pathlib.Path(fname)
+    text = p.read_text(encoding=&quot;utf-8&quot;, errors=&quot;ignore&quot;)
+    print(f&quot;\n== {p} ==&quot;)
+
+    for name, pat in PATTERNS.items():
+        matches = list(re.finditer(pat, text))
+        if matches:
+            failed = True
+            print(f&quot;[FAIL] {name}: {len(matches)} hit(s)&quot;)
+            for m in matches[:5]:
+                s = m.group(0)
+                print(&quot;  -&quot;, s[:120].replace(&quot;\n&quot;, &quot;\\n&quot;))
+
+    ips = []
+    for m in ip_pat.finditer(text):
+        ip = m.group(0)
+        if not ip.startswith(ALLOW_IP_PREFIX):
+            ips.append(ip)
+    if ips:
+        failed = True
+        print(f&quot;[FAIL] Public IPv4-like values: {len(set(ips))} unique&quot;)
+        for ip in sorted(set(ips))[:10]:
+            print(&quot;  -&quot;, ip)
+
+    if not failed:
+        print(&quot;[OK] no obvious secrets detected&quot;)
+
+sys.exit(1 if failed else 0)
+PY
+
+python3 /tmp/architoken-doc-redaction-scan.py \
+  &quot;ArchIToken-VPN-团队安全接入指南.html&quot; \
+  &quot;ArchIToken-VPN-安全运维与隐私保护指南.html&quot;</div>
+  <div class="ok"><div class="box-title">CI 建议</div><p>把扫描脚本放进内部仓库的 pre-commit 或 CI。任何含 <code>vless&#58;//</code>、UUID、真实公网 IP 的文档提交都直接失败。</p></div>
+</section>
+
+<section id="o03" class="block">
+  <div class="sect-head"><div class="sect-num">03</div><div><div class="sect-title">日志最小化与自动清理</div><div class="sect-en">Log Minimization</div></div></div>
+  <p>VPN 运维的隐私重点是：不记录不必要的访问明细，保留短周期系统日志用于排障，自动清理临时文件和参数文件。</p>
+  <h3>建议日志策略</h3>
+  <table>
+    <thead><tr><th>日志类型</th><th>建议</th><th>保留周期</th></tr></thead>
+    <tbody>
+      <tr><td>Xray access log</td><td>默认关闭或只在排障窗口临时开启</td><td>0-24 小时</td></tr>
+      <tr><td>Xray error log</td><td>保留 warning/error</td><td>7-30 天</td></tr>
+      <tr><td>systemd journal</td><td>只保留服务状态和错误</td><td>7 天</td></tr>
+      <tr><td>面板操作日志</td><td>保留管理员操作审计</td><td>30 天</td></tr>
+      <tr><td>参数文件</td><td>使用后删除本机临时副本</td><td>立即删除</td></tr>
+    </tbody>
+  </table>
+  <div class="cmd"><button class="copy" data-copy="1">COPY</button># journal 只保留最近 7 天
+sudo journalctl --vacuum-time=7d
+
+# logrotate 示例：Xray error/access 日志
+sudo tee /etc/logrotate.d/xray &gt;/dev/null &lt;&lt;&#x27;EOF&#x27;
+/var/log/xray/*.log {
+    weekly
+    rotate 4
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0600 root root
+    postrotate
+        systemctl reload xray 2&gt;/dev/null || systemctl restart xray 2&gt;/dev/null || true
+    endscript
+}
+EOF
+
+sudo logrotate -d /etc/logrotate.d/xray
+
+# 删除本机临时成员参数文件
+shred -u /tmp/architoken-vpn-*.env 2&gt;/dev/null || rm -f /tmp/architoken-vpn-*.env</div>
+  <div class="warn"><div class="box-title">排障窗口</div><p>需要打开 access log 时，先声明窗口，例如“打开 20 分钟排障”，排障后关闭并清理。不要长期记录用户访问目标域名。</p></div>
+</section>
+
+<section id="o04" class="block">
+  <div class="sect-head"><div class="sect-num">04</div><div><div class="sect-title">监控告警与健康检查</div><div class="sect-en">Monitoring</div></div></div>
+  <p>监控只看服务是否可用，不采集用户访问内容。所有监控目标都用占位符，避免在文档中暴露真实面板路径。</p>
+  <table>
+    <thead><tr><th>监控项</th><th>类型</th><th>目标模板</th><th>隐私注意</th></tr></thead>
+    <tbody>
+      <tr><td>VPN 端口</td><td>TCP</td><td class="m">{PRIMARY_SERVER_IP}:{VPN_PORT} / {SECONDARY_SERVER_IP}:{VPN_PORT}</td><td>只探活，不记录用户流量</td></tr>
+      <tr><td>出口验证</td><td>HTTP via proxy</td><td class="m">https://ifconfig.me</td><td>按当前选中节点比对出口 IP：USA-LAX-A1=203.0.113.10，NLD-AMS-A1=198.51.100.20</td></tr>
+      <tr><td>面板 HTTPS</td><td>HTTPS</td><td class="m">{PANEL_URL}</td><td>仅管理员监控，不给用户</td></tr>
+      <tr><td>磁盘空间</td><td>SSH / Agent</td><td class="m">df -h /</td><td>防日志占满</td></tr>
+    </tbody>
+  </table>
+  <div class="cmd"><button class="copy" data-copy="1">COPY</button># 本机 xray-client 动态状态检查：期望出口取 config.json 第一条 outbound
+cat &gt; /tmp/architoken-vpn-health.sh &lt;&lt;&#x27;EOF&#x27;
+#!/usr/bin/env bash
+set -euo pipefail
+
+expected=&quot;$(python3 - &lt;&lt;&#x27;PY&#x27;
+import json
+with open(&quot;/etc/xray-client/config.json&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+    c = json.load(f)
+for o in c.get(&quot;outbounds&quot;, []):
+    v = o.get(&quot;settings&quot;, {}).get(&quot;vnext&quot;, [{}])[0]
+    if v.get(&quot;address&quot;):
+        print(v[&quot;address&quot;])
+        break
+PY
+)&quot;
+
+actual=&quot;$(env -u http_proxy -u https_proxy -u all_proxy \
+  timeout 15 curl -fsS --socks5-hostname 127.0.0.1:10808 -4 https://ifconfig.me || true)&quot;
+
+echo &quot;expected=$expected&quot;
+echo &quot;actual=$actual&quot;
+
+if [ &quot;$actual&quot; = &quot;$expected&quot; ]; then
+  echo &quot;OK&quot;
+else
+  echo &quot;FAIL&quot;
+  exit 1
+fi
+EOF
+
+chmod +x /tmp/architoken-vpn-health.sh
+/tmp/architoken-vpn-health.sh</div>
+</section>
+
+<section id="o05" class="block">
+  <div class="sect-head"><div class="sect-num">05</div><div><div class="sect-title">泄露应急和回滚</div><div class="sect-en">Incident Response</div></div></div>
+  <div class="critical"><div class="box-title">疑似外泄时先止血</div><p>先撤销或禁用疑似成员凭证，再排查原因。不要先在群里讨论真实链接；不要把疑似泄露链接转发给更多人核对。</p></div>
+  <div class="steps">
+    <div class="step"><div><h4>定位范围</h4><p>通过成员代号、最近连接时间、流量异常和反馈来源判断是个人凭证外泄、HTML 文档外泄，还是管理员凭证外泄。</p></div></div>
+    <div class="step"><div><h4>撤销个人凭证</h4><p>删除或禁用对应 UUID。若是临时链接，直接到期或删除。通知该成员重新领证。</p></div></div>
+    <div class="step"><div><h4>轮换公共参数</h4><p>如果无法定位泄露者，轮换 ShortID / Reality 密钥 / 订阅路径，并为所有成员重新发个人链接。</p></div></div>
+    <div class="step"><div><h4>清理文档</h4><p>把所有旧版 HTML、截图、压缩包从群文件、网盘、工单和公开仓库删除。重新发布脱敏版。</p></div></div>
+    <div class="step"><div><h4>复盘</h4><p>记录外泄原因、影响范围、处理时间、是否需要更换 VPS 或 IP。更新发放 SOP。</p></div></div>
+  </div>
+
+  <h3>配置回滚规范</h3>
+  <div class="cmd"><button class="copy" data-copy="1">COPY</button># 创建当前正确配置的黄金备份，名字必须清晰
+sudo cp -a /etc/xray-client/config.json \
+  /etc/xray-client/config.json.good.current.$(date +%Y%m%d_%H%M%S)
+
+# 回滚时只使用明确标注 good/current 的备份
+sudo cp -a /etc/xray-client/config.json.good.current.YYYYMMDD_HHMMSS \
+  /etc/xray-client/config.json
+sudo systemctl restart xray-client</div>
+  <div class="warn"><div class="box-title">避免误回滚</div><p>不要使用含义不清的 <code>config.json.bak.*</code> 当作“当前正确配置”。备份文件名必须写明用途，例如 <code>good.proxy-ams</code>、<code>before-rotation</code>、<code>old-line</code>。</p></div>
+</section>
+
+<section id="o06" class="block">
+  <div class="sect-head"><div class="sect-num">06</div><div><div class="sect-title">全平台支持台账</div><div class="sect-en">Support Matrix</div></div></div>
+  <p>给用户排障时，不要索要完整链接；只索要平台、客户端、是否导入成功、出口是否匹配、错误码。</p>
+  <table>
+    <thead><tr><th>平台</th><th>一线检查</th><th>常见问题</th><th>处理</th></tr></thead>
+    <tbody>
+      <tr><td>Windows</td><td>系统代理或 TUN 接管是否被其他软件覆盖</td><td>Clash / 浏览器插件冲突</td><td>只保留一个代理或 TUN 接管入口</td></tr>
+      <tr><td>macOS</td><td>网络权限和 VPN/TUN 接管状态</td><td>二维码导入缺字段</td><td>改为剪贴板导入</td></tr>
+      <tr><td>Linux</td><td>服务是否监听 127.0.0.1:10808/10809</td><td>systemd 未重启</td><td>重启服务并看 journal</td></tr>
+      <tr><td>WSL2</td><td>是否走 Windows 主机代理</td><td>WSL 解析 localhost 不一致</td><td>使用宿主机网关或 Windows 代理</td></tr>
+      <tr><td>Android</td><td>VPN 权限是否授予</td><td>后台被系统杀掉</td><td>关闭电池优化</td></tr>
+      <tr><td>iOS</td><td>客户端是否支持配置字段</td><td>内核不兼容</td><td>换兼容客户端或兼容配置</td></tr>
+      <tr><td>ChromeOS</td><td>Android VPN 权限</td><td>企业策略禁止 VPN</td><td>联系设备管理员</td></tr>
+      <tr><td>NAS/Router</td><td>插件是否支持 Reality</td><td>把个人链接装到路由器导致全家共享</td><td>单独给路由器建低权限凭证</td></tr>
+    </tbody>
+  </table>
+  <div class="ok"><div class="box-title">ArchIToken-VPN 托盘基线</div><p>桌面托盘只展示 <strong>全局代理</strong> 与 <strong>国内直连</strong> 两个模式。状态灯采用交通灯语义：绿色正常，黄色预警或可切换，红色异常。系统代理仅作为命令行高级兜底，不作为日常模式发放。</p></div>
+  <div class="ok"><div class="box-title">安全支持模板</div><p>“请只发：平台、客户端名称、是否显示 connected、测试页出口 IP 是否等于管理员告知值、错误码。不要发完整配置链接、二维码或 JSON。”</p></div>
+</section>
+
+<footer class="footer">
+  <span>ArchIToken-VPN · OPS PRIVACY EDITION</span>
+  <span>Redaction first · least logging</span>
+  <span>2026-04-28</span>
+</footer>
+</main>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(btn=>{
+  btn.addEventListener("click", async ()=>{
+    const block = btn.closest(".cmd");
+    const copy = block ? block.innerText.replace(/^COPY\s*/,'').trim() : "";
+    try {
+      await navigator.clipboard.writeText(copy);
+      const old = btn.textContent;
+      btn.textContent = "✓";
+      btn.classList.add("done");
+      setTimeout(()=>{btn.textContent=old;btn.classList.remove("done")}, 1400);
+    } catch(e) { alert("复制失败，请手动选择代码块复制"); }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "mode": "tun",
+  "label": "国内直连（TUN 接管，国内直连 / 国外代理）",
+  "xray_socks": 10808,
+  "xray_http": 10809,
+  "tun_interface": "architoken",
+  "tun_ports": {
+    "mixed": 51867,
+    "socks": 51869,
+    "http": 51871,
+    "api": 51873
+  }
+}

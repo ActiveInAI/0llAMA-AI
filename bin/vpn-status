@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+exec /usr/bin/python3 "$HOME/.local/share/architoken-vpn/vpn-diagnose.py" "$@"
