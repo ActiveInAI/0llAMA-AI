@@ -2,6 +2,13 @@
 
 ArchIToken-VPN 的全平台路线分为两层：协议兼容优先，代码复用谨慎。
 
+独立客户端仓库：
+
+- Repository: <https://github.com/ActiveInAI/ArchIToken-VPN-Client>
+- License: GPL-3.0-or-later
+- Scope: Windows / Linux / macOS / Android / future iOS 客户端
+- Relationship: 本仓库继续负责运维、部署、Linux 托盘和服务端文档；客户端仓库负责面向用户的全平台软件。
+
 ## 可以直接借鉴的内容
 
 - VLESS / Reality 分享链接格式。
