@@ -55,8 +55,8 @@ curl -fsS --proxy http://127.0.0.1:10809 https://www.google.com/generate_204
 ### 2.1 安装用户态文件
 
 ```bash
-git clone https://github.com/ActiveInAI/0llAMA-AI.git
-cd 0llAMA-AI
+git clone https://github.com/ActiveInAI/ArchIToken-VPN.git
+cd ArchIToken-VPN
 ./install.sh
 ```
 
